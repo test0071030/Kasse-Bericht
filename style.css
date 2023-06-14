@@ -1,0 +1,43 @@
+/* 基本樣式 */
+body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #f2f2f2;
+    padding: 10px;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  nav ul li {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  /* 頁面樣式 */
+  .page {
+    margin-top: 50px;
+    padding: 20px;
+  }
+  
+  /* 其他頁面樣式 */
+  #page1 {
+    background: #eaf8ff;
+  }
+  
+  #page2 {
+    background: #e8f5e9;
+  }
+  
+  #page3 {
+    background: #fff8e1;
+  }
