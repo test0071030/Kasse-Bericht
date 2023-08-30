@@ -1,34 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type=""text/javascript" src="page.js"></script>
-  <link href="style.css" rel=stylesheet type="text/css" >
-  <title>網站示例</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>计算每日營業額</title>
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a href="#" onclick="showPage('page1')">頁面1</a></li>
-      <li><a href="#" onclick="showPage('page2')">頁面2</a></li>
-      <li><a href="#" onclick="showPage('page3')">頁面3</a></li>
-    </ul>
-  </nav>
-
-  <div id="page1" class="page">
-    <h1>頁面1</h1>
-    <p>這是頁面1的內容。</p>
-  </div>
-
-  <div id="page2" class="page" style="display: none;">
-    <h1>頁面2</h1>
-    <p>這是頁面2的內容。</p>
-  </div>
-
-  <div id="page3" class="page" style="display: none;">
-    <h1>頁面3</h1>
-    <p>這是頁面3的內容。</p>
-  </div>
+    <div id="banner">
+        <button id="openStoreButton">開店金額 / Anfangsbestand</button>
+        <button id="cashCountButton">Kasse 現金清點 / Zählprotokoll</button>
+    </div>
+    <div id="content">
+        <!-- 在这里将显示不同页面的内容 -->
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
