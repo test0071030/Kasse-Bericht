@@ -7,7 +7,7 @@ const content = document.getElementById('content');
 function showOpenStorePage() {
     content.innerHTML = `
         <div id="openStorePage">
-            <h2>開店金額 / Anfangsbestand</h2>
+            <h3>1. 開店金額 / Anfangsbestand</h3>
             <table id="cashTable">
                 <tr>
                     <th>數量/Anzahl</th>
@@ -59,7 +59,7 @@ function showOpenStorePage() {
                     <td id="totalAmount">0</td>
                 </tr>
             </table>
-            <button id="calculateButton">計算</button>
+            <button id="calculateButton">Caculate</button>
         </div>
     `;
 
@@ -77,7 +77,7 @@ function showOpenStorePage() {
 function showCashCountPage() {
     content.innerHTML = `
         <div id="cashCountPage">
-            <h2>Kasse 現金清點 / Zählprotokoll</h2>
+            <h3>3. Kasse 現金清點 / Zählprotokoll</h3>
             <table id="cashCountTable">
                 <tr>
                     <th>數量/Anzahl</th>
@@ -162,8 +162,9 @@ function showCashCountPage() {
                     <td id="kassenIstBestand">0</td>
                 </tr>
             </table>
-            <button id="calculateCashCountButton">計算</button>
-            
+            <button id="calculateCashCountButton">3. Calculate</button>
+            <div>Tips: you can also use this to calculate "Kassenbericht Zählprotokoll".
+            <hr>
             <div>
                 <label for="initialAmount">起始金額/Anfangsbestand:</label>
                 <input type="number" id="initialAmount" value="0">
@@ -172,7 +173,8 @@ function showCashCountPage() {
                 <label for="dailySales">當日現金營業額/Bar Umsatz:</label>
                 <input type="number" id="dailySales" value="0">
             </div>
-            <button id="calculateFinalAmount">計算最終金額</button>
+            <br>
+            <button id="calculateFinalAmount">4. Calculate</button>
             <div id="finalAmountResult"></div>
 
             <!-- 差额/Diff -->
@@ -181,14 +183,8 @@ function showCashCountPage() {
             <!-- 總計/Total -->
             <p id="total">總計/Total: €0.00</p>
 
-            <!-- 差额增減表格 -->
-            <table id="diffChangeTable">
-                <tr>
-                    <th>面額/Betrag</th>
-                    <th>數量</th>
-                    <th>金額</th>
-                </tr>
-            </table>
+            <hr>
+            <h3>7. 結帳後留在Kasse機內的金額<br>verbleibendes Wechselgeld</h3>
             <div id="newTableContainer"></div>
         </div>
     `;
@@ -284,10 +280,6 @@ function calculateFinalCashAmount() {
     const diffElement = document.getElementById('diff');
     diffElement.textContent = '差額/Diff: €' + diff.toFixed(2);
 
-    // 计算差额增減
-    let diffChangeTable = document.getElementById('diffChangeTable');
-    diffChangeTable.innerHTML = ''; // 清空表格内容
-
     // 显示总计为差额的负值
     const totalElement = document.getElementById('total');
     totalElement.textContent = '總計/Total: €' + (-diff).toFixed(2);
@@ -352,30 +344,13 @@ function createNewCashTable() {
     `;
 
     const calculateNewButton = document.createElement('button');
-    calculateNewButton.textContent = '計算新表格';
+    calculateNewButton.textContent = '7. Calculate';
     calculateNewButton.addEventListener('click', calculateNewAmount);
 
     const newTableContainer = document.getElementById('newTableContainer');
     newTableContainer.innerHTML = ''; // 清空容器
     newTableContainer.appendChild(newTable);
     newTableContainer.appendChild(calculateNewButton);
-
-    /*
-    // 获取 id 为 "count5" 的 input 元素
-    const count5Input = document.getElementById('count5');
-
-    // 获取 id 为 "newQuantity3" 的 input 元素
-    const newQuantity3Input = document.getElementById('newQuantity3');
-
-    // 添加事件监听器以在 "count5" input 值更改时更新 "newQuantity3" input 的值
-    count5Input.addEventListener('input', function () {
-        // 获取 "count5" input 的值
-        const count5Value = count5Input.value;
-
-        // 将 "count5" input 的值设置为 "newQuantity3" input 的值
-        newQuantity3Input.value = count5Value;
-    });
-    */
     
 }
 
@@ -389,15 +364,29 @@ function calculateNewAmount() {
 
     const newDenominations = [20, 10, 5, 2, 1, 0.5, 0.2, 0.1];
 
-    // 计算新表格的总额
+    // 计算新表格的总额和各个面额的总额
     let newTotal = 0;
+    let denominationTotal = Array(8).fill(0); // 创建一个数组以存储各个面额的总额
+
     for (let i = 0; i < newQuantities.length; i++) {
         newTotal += newQuantities[i] * newDenominations[i];
+        denominationTotal[i] = newQuantities[i] * newDenominations[i]; // 计算各个面额的总额
     }
 
     // 更新新表格的总额显示
     const newTotalAmount = document.getElementById('newTotalAmount');
     newTotalAmount.textContent = newTotal.toFixed(2);
+
+    // 更新各个面额的总额显示
+    for (let i = 0; i < denominationTotal.length; i++) {
+        const denominationTotalCell = document.getElementById(`newAmount${i}`);
+        denominationTotalCell.textContent = denominationTotal[i].toFixed(2);
+    }
+
+    // 计算并更新总计为各个面额总额的总额
+    const totalElement = document.getElementById('newTotalAmount');
+    const totalDenomination = denominationTotal.reduce((acc, curr) => acc + curr, 0);
+    totalElement.textContent = '總計/Total: €' + totalDenomination.toFixed(2);
 }
 
 // 更新2歐以下的 newQuantity 的值

@@ -27,3 +27,21 @@ body {
 #content {
   padding: 20px;
 }
+
+tr {
+  width: 100%;
+}
+
+th {
+  width: 30%;
+}
+
+td {
+  width: 30%;
+  padding: 3px 0;
+}
+
+input {
+  width: 69%;
+  padding: 1px;
+}
