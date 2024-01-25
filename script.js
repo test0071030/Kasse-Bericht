@@ -229,7 +229,31 @@ function calculateAmount() {
 // 计算函数 - Kasse清点
 function calculateCashCount() {
     // 获取表格中的所有输入框和金额单元格
+    let isValid = true;
     const quantities = document.querySelectorAll('#cashCountTable input[type="number"]');
+
+    quantities.forEach(input => {
+        let value = input.value.trim();
+
+        // 如果输入为空，自动将其设置为0
+        if (value === '') {
+            input.value = '0';
+            value = '0';
+        }
+
+        // 验证输入是否为非负整数
+        if (!Number.isInteger(parseFloat(value)) || parseFloat(value) < 0) {
+            input.style.borderColor = 'red'; // 显示红色边框
+            isValid = false;
+        } else {
+            input.style.borderColor = ''; // 如果输入有效，移除红色边框
+        }
+    });
+
+    if (!isValid) {
+        return; // 如果有无效输入，则不继续计算
+    }
+    //const quantities = document.querySelectorAll('#cashCountTable input[type="number"]');
     const amounts = document.querySelectorAll('#cashCountTable td[id^="cashCountAmount"]');
     const totalAmountCell = document.getElementById('kassenIstBestand');
     const totalAmountScheine = document.getElementById('totalAmountScheine');
@@ -286,6 +310,39 @@ function calculateFinalCashAmount() {
 
     createNewCashTable()
     updateNewAllQuantity()
+
+    // 清除先前的提示信息
+    const existingMessage = document.getElementById('diffMessage');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+
+    // 创建新的提示信息元素
+    const diffMessageContainer = document.createElement('div');
+    diffMessageContainer.id = 'diffMessage'; // 为新元素添加ID，方便下次查找和删除
+
+    const diffValue = kassenIstBestand - initialAmount - dailySales;
+    //const totalElement = document.getElementById('total');
+    let message = '';
+
+    if (diffValue !== 0) {
+        message = "The difference is not zero, please adjust and re-enter the above table, then press '3. Calculate' and '4. Calculate' again until both the difference and total are zero.";
+    } else {
+        message = "The cash amount today is completely correct, congratulations! Please fill in the above figures in the 'Kassenbericht mit Zählprotokoll für offene Ladenkassen' form.";
+    }
+
+    diffMessageContainer.textContent = message;
+
+    // 显示额外的提示信息，并确保它在新的一行显示
+    totalElement.innerHTML = totalElement.textContent + '<br>'; // 在现有文本后添加换行
+    if (diffValue > 0) {
+        totalElement.innerHTML += " The cash in the machine is more than it should be, money needs to be taken out.";
+    } else if (diffValue < 0) {
+        totalElement.innerHTML += " The cash in the machine is less than it should be, money needs to be added.";
+    }
+
+    // 将提示信息添加到页面上
+    totalElement.after(diffMessageContainer);
 }
 
 // 生成新表格和计算按钮
