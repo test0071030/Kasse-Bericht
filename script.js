@@ -342,9 +342,13 @@ function calculateFinalCashAmount() {
 
     // 创建额外的计算部分
     const extraCalculationHTML = `
-        <div style="display: flex; justify-content: space-between;">
+    <hr>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="margin-bottom: 10px; font-size: 20px;">
+            <p>Kassen-Ist-Bestand: <span id="kassenIstBestandValue">${document.getElementById('kassenIstBestand').textContent}</span></p>
+        </div>
+        <div style="display: flex; justify-content: space-between; width: 100%;">
             <div style="flex: 1; padding-right: 10px;">
-                <p>Kassen-Ist-Bestand: <span id="kassenIstBestandValue">${document.getElementById('kassenIstBestand').textContent}</span></p>
                 <label for="verwendung">-Verwendung:</label>
                 <input type="number" id="verwendung" value="0">
                 <button onclick="calculateVerbleibendesWechselgeld()">Calculate</button>
@@ -357,6 +361,7 @@ function calculateFinalCashAmount() {
                 <p>Tageslosung: <span id="tageslosungValue"></span></p>
             </div>
         </div>
+    </div>
     `;
 
     const calculationContainer = document.createElement('div');
