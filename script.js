@@ -85,27 +85,27 @@ function showCashCountPage() {
                     <th>金額/Summe</th>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count0" value="0"></td>
+                    <td><input type="number" id="count0"></td>
                     <td>€100.00</td>
                     <td id="cashCountAmount0">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count1" value="0"></td>
+                    <td><input type="number" id="count1"></td>
                     <td>€50.00</td>
                     <td id="cashCountAmount1">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count2" value="0"></td>
+                    <td><input type="number" id="count2"></td>
                     <td>€20.00</td>
                     <td id="cashCountAmount2">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count3" value="0"></td>
+                    <td><input type="number" id="count3"></td>
                     <td>€10.00</td>
                     <td id="cashCountAmount3">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count4" value="0"></td>
+                    <td><input type="number" id="count4"></td>
                     <td>€5.00</td>
                     <td id="cashCountAmount4">0</td>
                 </tr>
@@ -114,42 +114,42 @@ function showCashCountPage() {
                     <td id="totalAmountScheine">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count5" value="0"></td>
+                    <td><input type="number" id="count5"></td>
                     <td>€2.00</td>
                     <td id="cashCountAmount5">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count6" value="0"></td>
+                    <td><input type="number" id="count6"></td>
                     <td>€1.00</td>
                     <td id="cashCountAmount6">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count7" value="0"></td>
+                    <td><input type="number" id="count7"></td>
                     <td>€0.50</td>
                     <td id="cashCountAmount7">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count8" value="0"></td>
+                    <td><input type="number" id="count8"></td>
                     <td>€0.20</td>
                     <td id="cashCountAmount8">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count9" value="0"></td>
+                    <td><input type="number" id="count9"></td>
                     <td>€0.10</td>
                     <td id="cashCountAmount9">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count10" value="0"></td>
+                    <td><input type="number" id="count10"></td>
                     <td>€0.05</td>
                     <td id="cashCountAmount10">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count11" value="0"></td>
+                    <td><input type="number" id="count11"></td>
                     <td>€0.02</td>
                     <td id="cashCountAmount11">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="count12" value="0"></td>
+                    <td><input type="number" id="count12"></td>
                     <td>€0.01</td>
                     <td id="cashCountAmount12">0</td>
                 </tr>
@@ -167,11 +167,11 @@ function showCashCountPage() {
             <hr>
             <div>
                 <label for="initialAmount">起始金額/Anfangsbestand:</label>
-                <input type="number" id="initialAmount" value="0">
+                <input type="number" id="initialAmount">
             </div>
             <div>
                 <label for="dailySales">當日現金營業額/Bar Umsatz:</label>
-                <input type="number" id="dailySales" value="0">
+                <input type="number" id="dailySales">
             </div>
             <br>
             <button id="calculateFinalAmount">4. Calculate</button>
@@ -350,13 +350,13 @@ function calculateFinalCashAmount() {
         <div style="display: flex; justify-content: space-between; width: 100%;">
             <div style="flex: 1; padding-right: 10px;">
                 <label for="verwendung">-Verwendung:</label>
-                <input type="number" id="verwendung" value="0">
+                <input type="number" id="verwendung">
                 <button onclick="calculateVerbleibendesWechselgeld()">Calculate</button>
                 <p>verbleibendes Wechselgeld: <span id="verbleibendesWechselgeldValue"></span></p>
             </div>
             <div style="flex: 1; padding-left: 10px;">
                 <label for="anfangsbestand">-Anfangsbestand:</label>
-                <input type="number" id="anfangsbestand" value="0">
+                <input type="number" id="anfangsbestand">
                 <button onclick="calculateTageslosung()">Calculate</button>
                 <p>Tageslosung: <span id="tageslosungValue"></span></p>
             </div>
@@ -501,8 +501,30 @@ function updateNewAllQuantity() {
 function calculateVerbleibendesWechselgeld() {
     const kassenIstBestand = parseFloat(document.getElementById('kassenIstBestandValue').textContent);
     const verwendung = parseFloat(document.getElementById('verwendung').value);
-    const result = kassenIstBestand - verwendung;
-    document.getElementById('verbleibendesWechselgeldValue').textContent = result.toFixed(2);
+    let result = kassenIstBestand - verwendung;
+    result = parseFloat(result.toFixed(2)); // 四舍五入到小数点后两位，并转换为数字
+    document.getElementById('verbleibendesWechselgeldValue').textContent = result;
+
+    // 提取 totalElement 中的数值
+    const totalElementText = document.getElementById('newTotalAmount').textContent;
+    const totalDenominationMatch = totalElementText.match(/-?\d+(\.\d+)?/); // 匹配数字，包括负数和小数
+    const totalDenomination = totalDenominationMatch ? parseFloat(totalDenominationMatch[0]) : NaN;
+
+    // 移除旧的错误消息（如果存在）
+    const existingErrorMessage = document.getElementById('error-message');
+    if (existingErrorMessage) {
+        existingErrorMessage.remove();
+    }
+
+    // 比较 result 和 totalDenomination
+    if (result !== totalDenomination) {
+        // 如果不相等，显示错误消息
+        const errorMessage = document.createElement('p');
+        errorMessage.id = 'error-message';
+        errorMessage.style.color = 'red';
+        errorMessage.textContent = 'Value error, please check if verbleibendes Wechselgeld is correct.';
+        document.getElementById('verbleibendesWechselgeldValue').after(errorMessage);
+    }
 }
 
 function calculateTageslosung() {
