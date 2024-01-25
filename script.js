@@ -30,27 +30,27 @@ function showOpenStorePage() {
                     <td id="amount2">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="quantity3" value="0"></td>
+                    <td><input type="number" id="quantity3"></td>
                     <td>€2.00</td>
                     <td id="amount3">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="quantity4" value="0"></td>
+                    <td><input type="number" id="quantity4"></td>
                     <td>€1.00</td>
                     <td id="amount4">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="quantity5" value="0"></td>
+                    <td><input type="number" id="quantity5"></td>
                     <td>€0.50</td>
                     <td id="amount5">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="quantity6" value="0"></td>
+                    <td><input type="number" id="quantity6"></td>
                     <td>€0.20</td>
                     <td id="amount6">0</td>
                 </tr>
                 <tr>
-                    <td><input type="number" id="quantity7" value="0"></td>
+                    <td><input type="number" id="quantity7"></td>
                     <td>€0.10</td>
                     <td id="amount7">0</td>
                 </tr>
@@ -212,18 +212,37 @@ function calculateAmount() {
     const totalAmountCell = document.getElementById('totalAmount');
 
     let totalAmount = 0;
+    let isValid = true;
 
     // 遍历每一行，计算金额并更新到对应的单元格
-    for (let i = 0; i < quantities.length; i++) {
-        const quantity = parseInt(quantities[i].value);
+    quantities.forEach((input, i) => {
+        let value = input.value.trim();
+
+        // 如果输入为空，自动将其设置为0
+        if (value === '') {
+            input.value = '0';
+            value = '0';
+        }
+
+        // 验证输入是否为非负整数
+        if (!Number.isInteger(parseFloat(value)) || parseFloat(value) < 0) {
+            input.style.borderColor = 'red'; // 显示红色边框
+            isValid = false;
+        } else {
+            input.style.borderColor = ''; // 如果输入有效，移除红色边框
+        }
+
+        const quantity = parseFloat(value);
         const faceValue = parseFloat(amounts[i].previousElementSibling.textContent.replace('€', ''));
         const lineAmount = quantity * faceValue;
         amounts[i].textContent = lineAmount.toFixed(2);
         totalAmount += lineAmount;
-    }
+    });
 
-    // 更新总额
-    totalAmountCell.textContent = totalAmount.toFixed(2);
+    // 如果所有输入都有效，则更新总额
+    if (isValid) {
+        totalAmountCell.textContent = totalAmount.toFixed(2);
+    }
 }
 
 // 计算函数 - Kasse清点
