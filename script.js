@@ -312,38 +312,61 @@ function calculateFinalCashAmount() {
     updateNewAllQuantity()
 
     // 清除先前的提示信息
-    const existingMessage = document.getElementById('diffMessage');
-    if (existingMessage) {
-        existingMessage.remove();
+    const existingDiffMessage = document.getElementById('diffMessage');
+    if (existingDiffMessage) {
+        existingDiffMessage.remove();
     }
 
     // 创建新的提示信息元素
     const diffMessageContainer = document.createElement('div');
-    diffMessageContainer.id = 'diffMessage'; // 为新元素添加ID，方便下次查找和删除
+    diffMessageContainer.id = 'diffMessage';
 
-    const diffValue = kassenIstBestand - initialAmount - dailySales;
-    //const totalElement = document.getElementById('total');
     let message = '';
-
-    if (diffValue !== 0) {
+    if (diff !== 0) {
         message = "The difference is not zero, please adjust and re-enter the above table, then press '3. Calculate' and '4. Calculate' again until both the difference and total are zero.";
     } else {
         message = "The cash amount today is completely correct, congratulations! Please fill in the above figures in the 'Kassenbericht mit Zählprotokoll für offene Ladenkassen' form.";
     }
 
     diffMessageContainer.textContent = message;
+    document.getElementById('finalAmountResult').appendChild(diffMessageContainer);
 
-    // 显示额外的提示信息，并确保它在新的一行显示
-    totalElement.innerHTML = totalElement.textContent + '<br>'; // 在现有文本后添加换行
-    if (diffValue > 0) {
-        totalElement.innerHTML += " The cash in the machine is more than it should be, money needs to be taken out.";
-    } else if (diffValue < 0) {
-        totalElement.innerHTML += " The cash in the machine is less than it should be, money needs to be added.";
+    // 更新额外的提示信息
+    if (diff > 0) {
+        totalElement.innerHTML = '總計/Total: €' + (-diff).toFixed(2) + "<br>The cash in the machine is more than it should be, money needs to be taken out.";
+    } else if (diff < 0) {
+        totalElement.innerHTML = '總計/Total: €' + (-diff).toFixed(2) + "<br>The cash in the machine is less than it should be, money needs to be added.";
+    } else {
+        totalElement.innerHTML = '總計/Total: €' + (-diff).toFixed(2);
     }
 
-    // 将提示信息添加到页面上
-    totalElement.after(diffMessageContainer);
+    // 创建额外的计算部分
+    const extraCalculationHTML = `
+        <div style="display: flex; justify-content: space-between;">
+            <div style="flex: 1; padding-right: 10px;">
+                <p>Kassen-Ist-Bestand: <span id="kassenIstBestandValue">${document.getElementById('kassenIstBestand').textContent}</span></p>
+                <label for="verwendung">-Verwendung:</label>
+                <input type="number" id="verwendung" value="0">
+                <button onclick="calculateVerbleibendesWechselgeld()">Calculate</button>
+                <p>verbleibendes Wechselgeld: <span id="verbleibendesWechselgeldValue"></span></p>
+            </div>
+            <div style="flex: 1; padding-left: 10px;">
+                <label for="anfangsbestand">-Anfangsbestand:</label>
+                <input type="number" id="anfangsbestand" value="0">
+                <button onclick="calculateTageslosung()">Calculate</button>
+                <p>Tageslosung: <span id="tageslosungValue"></span></p>
+            </div>
+        </div>
+    `;
+
+    const calculationContainer = document.createElement('div');
+    calculationContainer.innerHTML = extraCalculationHTML;
+    const newTableContainer = document.getElementById('newTableContainer');
+    // 注意这里我们不再清空 newTableContainer，而是直接追加内容
+    newTableContainer.appendChild(calculationContainer);
 }
+
+
 
 // 生成新表格和计算按钮
 function createNewCashTable() {
@@ -468,6 +491,20 @@ function updateNewAllQuantity() {
     newQuantity5Input.value = count7Value;
     newQuantity6Input.value = count8Value;
     newQuantity7Input.value = count9Value;
+}
+
+function calculateVerbleibendesWechselgeld() {
+    const kassenIstBestand = parseFloat(document.getElementById('kassenIstBestandValue').textContent);
+    const verwendung = parseFloat(document.getElementById('verwendung').value);
+    const result = kassenIstBestand - verwendung;
+    document.getElementById('verbleibendesWechselgeldValue').textContent = result.toFixed(2);
+}
+
+function calculateTageslosung() {
+    const kassenIstBestand = parseFloat(document.getElementById('kassenIstBestandValue').textContent);
+    const anfangsbestand = parseFloat(document.getElementById('anfangsbestand').value);
+    const result = kassenIstBestand - anfangsbestand;
+    document.getElementById('tageslosungValue').textContent = result.toFixed(2);
 }
 
 // 按钮点击事件监听
